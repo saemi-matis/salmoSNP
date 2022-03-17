@@ -1,0 +1,15 @@
+#convert to BED files
+plink --file SsaTrack_Island_1-8 --make-bed --out SsaTrack_Island_1-8_bin --allow-extra-chr
+plink --file SsaTrack_Sten_Island --make-bed --out SsaTrack_Sten_Island_bin --allow-extra-chr
+#Merge two files
+plink --bfile SsaTrack_Island_1-8_bin --bmerge SsaTrack_Sten_Island_bin --recode --out SsaTrack_Iceland_Stofnfiskur --allow-extra-chr
+#Remvoe MT
+plink --bfile SsaTrack_Iceland_Stofnfiskur --not-chr ssaMT --allow-extra-chr --make-bed -out SsaTrack_Iceland_Stofnfiskur_woMT
+#Filter missing data & MAF
+plink --bfile SsaTrack_Iceland_Stofnfiskur_woMT --mind 0.1 --geno 0.1 --maf 0.05 --recode --out SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90 --allow-extra-chr
+#Change population (family name of Icelandic)
+plink --file SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90 --update-ids SsaTrack_Island_1-8_updateIds.txt --recode --out SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90_twoPops --allow-extra-chr
+# Remvoe Hybrid
+plink --file SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90_twoPops --remove removeHybrid.txt --recode --out SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90_twoPops_noHybrid --allow-extra-chr
+# Calc FST across loci and populations
+plink --file SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90_twoPops_noHybrid --allow-extra-chr --family --fst --out SsaTrack_Iceland_Stofnfiskur_woMT_maf05geno90mind90_twoPops_noHybrid_FST
