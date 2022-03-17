@@ -91,13 +91,14 @@ def main():
         print("#INFO: Population Iceland selected: Parsing individual information")
         individualsInfo_dict = parse_individualsInfo(args.individuals)
         riversInfo_dict = parse_riverInformation(args.rivers)
+        updateIdsFile = writePopFileForSNPdevelopment(individualsInfo_dict, args.out_name)
     elif args.population == "Stofnfiskur":
         print("#INFO: Population Stofnfiskur selected: No individual information presnent (expected)")
         individualsInfo_dict = parseStofnfiskurIndividuals(args.genotypes)
         riversInfo_dict = {}
-    updateIdsFile = writePopFileForSNPdevelopment(individualsInfo_dict, args.out_name)
     write_plinkFiles(genotypes_dict, ssatrackAnnotation_dict, riversInfo_dict, individualsInfo_dict, args.out_name, args.population, sstrackSNPcoordinates)
-    print(f"#INFO: To update population IDs to Ice, run plink with --update-ids {updateIdsFile}")
+    if args.population == "Iceland":
+        print(f"#INFO: To update population IDs to Ice, run plink with --update-ids {updateIdsFile}")
     print(f"Script exceuted successfully, check {logFileName}.log for more details")
 
 
